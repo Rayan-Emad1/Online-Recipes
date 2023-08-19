@@ -43,11 +43,10 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::create('shares', function (Blueprint $table) {
+        Schema::create('list_recipes', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained();
-            $table->foreignId('recipe_id')->constrained();
-            $table->string('shareable_link');
+            $table->foreignId('list_id');
+            $table->foreignId('recipe_id');
             $table->timestamps();
         });
 
@@ -59,7 +58,7 @@ return new class extends Migration
         Schema::dropIfExists('followers');
         Schema::dropIfExists('likes');
         Schema::dropIfExists('comments');
-        Schema::dropIfExists('shares');
+        Schema::dropIfExists('list_recipes');
 
     }
 };
