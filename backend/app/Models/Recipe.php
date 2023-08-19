@@ -26,8 +26,8 @@ class Recipe extends Model
         return $this->hasMany(Comment::class);
     }
 
-    public function lists()
+    public function shoppingLists()
     {
-        return $this->belongsToMany(ShoppingList::class, 'list_recipes');
+        return $this->belongsToMany(ShoppingList::class, 'lists', 'recipe_id', 'shopping_list_id');
     }
 }

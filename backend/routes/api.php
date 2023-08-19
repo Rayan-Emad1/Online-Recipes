@@ -14,16 +14,16 @@ Route::post('/signup', [AuthController::class, 'signUp']);
 Route::group(["middleware" => "auth:api"], function () {
     Route::post('/search', [Controller::class, 'searchRecipes']);
     Route::get('/recipes', [Controller::class, 'getRecipes']);
+    Route::get('/recipe_info', [Controller::class, 'getRecipeLikes']);
     
     Route::post('/add_recipe', [Controller::class, 'addRecipe']);
     Route::post('/like', [Controller::class, 'likeRecipe']);
     Route::post('/comment', [Controller::class, 'commentOnRecipe']);
-    Route::get('/recipe/likes', [Controller::class, 'getRecipeLikes']);
     Route::post('/add_list', [Controller::class, 'addRecipeToList']);
-    Route::get('/get_list', [Controller::class, 'getListRecipes']);
     
     Route::get('/follow', [Controller::class, 'FollowUser']);
     Route::get('/personal_info', [Controller::class, 'getPersonalInfo']);
+    Route::get('/get_list', [Controller::class, 'getListRecipes']);
     
 
 });

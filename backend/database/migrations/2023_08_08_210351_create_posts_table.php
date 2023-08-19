@@ -43,7 +43,7 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::create('lists', function (Blueprint $table) {
+        Schema::create('shopping_lists', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('recipe_id');

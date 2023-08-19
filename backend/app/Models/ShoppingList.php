@@ -9,13 +9,13 @@ class ShoppingList extends Model
 {
     protected $fillable = ['user_id', 'name'];
 
-    public function user()
+    public function users()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsToMany(User::class, 'lists', 'shopping_list_id', 'user_id');
     }
 
     public function recipes()
     {
-        return $this->belongsToMany(Recipe::class, 'list_recipes');
+        return $this->belongsToMany(Recipe::class, 'lists', 'shopping_list_id', 'recipe_id');
     }
 }
