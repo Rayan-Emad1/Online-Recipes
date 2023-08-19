@@ -24,15 +24,14 @@ class Controller extends BaseController{
 
 
     public function getRecipes(Request $request){
+
         $user = Auth::user();
-    
         $followingIds = Follower::where('follower_id', $user->id)->pluck('following_id')->toArray();
-    
         $recipes = Recipe::whereIn('user_id', $followingIds)->get();
-    
+
         $formattedRecipes = [];
         foreach ($recipes as $recipe) {
-            $user = User::find($recipe->user_id);
+            $user = $recipe->user;
             $formattedRecipes[] = [
                 'id' => $recipe->id,
                 'name' => $recipe->name,
@@ -40,14 +39,48 @@ class Controller extends BaseController{
                 'ingredients' => $recipe->ingredients,
                 'image_url' => $recipe->image_url,
                 'user_name' => $user->name,
-                'likes' => $recipe->likes()->count(),
+                'likes' => $recipe->likes->count(),
             ];
         }
-    
+
         return response()->json([
             'status' => 'Success',
             'recipes' => $formattedRecipes,
         ]);
+    }
+
+    public function searchRecipes(Request $request){
+        $cuisine = $request->cuisine ?? '';
+        $query = $request->query ?? '';
+
+        $queryBuilder = Recipe::query();
+
+        if ($cuisine) {
+            $queryBuilder->where('cuisine', 'LIKE', "%$cuisine%");
+        }
+
+        if ($query) {
+            $queryBuilder->where(function ($q) use ($query) {
+                $q->where('name', 'LIKE', "%$query%")
+                ->orWhere('ingredients', 'LIKE', "%$query%");
+            });
+        }
+
+        $recipes = $queryBuilder->get();
+
+        $formattedRecipes = [];
+        foreach ($recipes as $recipe) {
+            $formattedRecipe = [
+                'id' => $recipe->id,
+                'name' => $recipe->name,
+                'cuisine' => $recipe->cuisine,
+                'ingredients' => $recipe->ingredients,
+                'image_url' => $recipe->image_url,
+            ];
+            $formattedRecipes[] = $formattedRecipe;
+        }
+
+        return response()->json(['recipes' => $formattedRecipes]);
     }
 
     
