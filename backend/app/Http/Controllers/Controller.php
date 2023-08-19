@@ -81,7 +81,7 @@ class Controller extends BaseController{
         return response()->json(['recipes' => $formattedRecipes]);
     }
 
-    function getPersonalRecipes(Request $request){
+    function getPersonalInfo(Request $request){
         $user = Auth::user();
         $personalRecipes = $user->recipes;
 
@@ -100,8 +100,13 @@ class Controller extends BaseController{
             $formattedRecipes[] = $formattedRecipe;
         }
 
+        $totalLikes = $user->likes()->count();
+        $totalFollowers = $user->followers->count();
+
         return response()->json([
-            'personal_recipes' => $formattedRecipes
+            'total_likes' => $totalLikes,
+            'total_followers' => $totalFollowers,
+            'personal_recipes' => $formattedRecipes,
         ]);
     }
 
