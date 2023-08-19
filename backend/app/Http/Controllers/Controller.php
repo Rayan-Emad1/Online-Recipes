@@ -101,7 +101,7 @@ class Controller extends BaseController{
         }
 
         $totalLikes = $user->likes()->count();
-        $totalFollowers = $user->followers->count();
+        $totalFollowers = $user->followers()->count();
 
         return response()->json([
             'total_likes' => $totalLikes,
@@ -179,6 +179,48 @@ class Controller extends BaseController{
         $comment->save();
 
         return response()->json(['Message' => 'Comment Added']);
+    }
+
+    function getRecipeInfo(Request $request){
+        $recipeId = $request->input('recipe_id');
+        $recipe = Recipe::find($recipeId);
+
+        if (!$recipe) {
+            return response()->json(['status' => 'Recipe not found'], 404);
+        }
+
+        $likesByUsers = [];
+        foreach ($recipe->likes as $like) {
+            $likesByUsers[] = [
+                'user_name' => $like->user->name,
+            ];
+        }
+
+        $comments = [];
+        foreach ($recipe->comments as $comment) {
+            $comments[] = [
+                'user_name' => $comment->user->name,
+                'comment_text' => $comment->comment_text,
+            ];
+        }
+
+        $recipeInfo = [
+            'id' => $recipe->id,
+            'name' => $recipe->name,
+            'cuisine' => $recipe->cuisine,
+            'ingredients' => $recipe->ingredients,
+            'image_url' => $recipe->image_url,
+            'user_name' => $recipe->user->name,
+            'likes' => $recipe->likes->count(),
+            'is_liked_by_user' => $recipe->likes->contains('user_id', Auth::id()),
+            'likes_by_users' => $likesByUsers,
+            'comments' => $comments,
+        ];
+
+        return response()->json([
+            'status' => 'Success',
+            'recipe_info' => $recipeInfo,
+        ]);
     }
 
     
