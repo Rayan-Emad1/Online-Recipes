@@ -30,11 +30,27 @@ return new class extends Migration
 
         Schema::create('likes', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('post_id');
+            $table->foreignId('user_id');
+            $table->foreignId('recipe_id');
             $table->timestamps();
         });
-    
+
+        Schema::create('comments', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->constrained();
+            $table->foreignId('recipe_id')->constrained();
+            $table->text('comment_text');
+            $table->timestamps();
+        });
+
+        Schema::create('shares', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->constrained();
+            $table->foreignId('recipe_id')->constrained();
+            $table->string('shareable_link');
+            $table->timestamps();
+        });
+
     }
 
     public function down(): void
@@ -42,5 +58,8 @@ return new class extends Migration
         Schema::dropIfExists('recipes');
         Schema::dropIfExists('followers');
         Schema::dropIfExists('likes');
+        Schema::dropIfExists('comments');
+        Schema::dropIfExists('shares');
+
     }
 };
