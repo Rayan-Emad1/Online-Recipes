@@ -18,12 +18,12 @@ use App\Models\List;
 class Controller extends BaseController{
 
 
-    public function __construct(){
+    function __construct(){
         $this->middleware('auth:api');
     }
 
 
-    public function getRecipes(Request $request){
+    function getRecipes(Request $request){
 
         $user = Auth::user();
         $followingIds = Follower::where('follower_id', $user->id)->pluck('following_id')->toArray();
@@ -49,41 +49,39 @@ class Controller extends BaseController{
         ]);
     }
 
-    public function searchRecipes(Request $request){
-        $cuisine = $request->cuisine ?? '';
-        $query = $request->query ?? '';
+    function searchRecipes(Request $request){
+        $category = $request->input('category', '');
+        $query = $request->input('query', '');
 
         $queryBuilder = Recipe::query();
 
-        if ($cuisine) {
-            $queryBuilder->where('cuisine', 'LIKE', "%$cuisine%");
+        if ($category) {
+            $queryBuilder->where('cuisine', 'LIKE', "%$category%");
         }
 
         if ($query) {
-            $queryBuilder->where(function ($q) use ($query) {
-                $q->where('name', 'LIKE', "%$query%")
-                ->orWhere('ingredients', 'LIKE', "%$query%");
-            });
+            $queryBuilder->where('name', 'LIKE', "%$query%")
+                        ->orWhere('ingredients', 'LIKE', "%$query%");
         }
 
-        $recipes = $queryBuilder->get();
+        $recipes = $queryBuilder->with('user')->get();
 
         $formattedRecipes = [];
         foreach ($recipes as $recipe) {
             $formattedRecipe = [
+                'owner' => $recipe->user->name,
                 'id' => $recipe->id,
                 'name' => $recipe->name,
                 'cuisine' => $recipe->cuisine,
                 'ingredients' => $recipe->ingredients,
-                'image_url' => $recipe->image_url,
+                'image_url' => $recipe->image_url, 
             ];
             $formattedRecipes[] = $formattedRecipe;
         }
-
         return response()->json(['recipes' => $formattedRecipes]);
     }
 
-    public function getPersonalRecipes(Request $request){
+    function getPersonalRecipes(Request $request){
         $user = Auth::user();
         $personalRecipes = $user->recipes;
 
@@ -103,5 +101,26 @@ class Controller extends BaseController{
         return response()->json(['personal_recipes' => $formattedRecipes]);
     }
 
+    function addRecipe(Request $request){
+        $user = Auth::user();
+
+        $data = $request->validate([
+            'name' => 'required|string|max:255',
+            'cuisine' => 'required|string|max:255',
+            'ingredients' => 'required|string',
+        ]);
+
+        $recipe = new Recipe();
+        $recipe->user_id = $user->id;
+        $recipe->name = $data['name'];
+        $recipe->cuisine = $data['cuisine'];
+        $recipe->ingredients = $data['ingredients'];
+        $recipe->image_url = $data['image_url'] ?? '';
+        $recipe->save();
+
+        return response()->json(['status' => 'Success', 'recipe' => $recipe]);
+    }
+
+    
     
 }

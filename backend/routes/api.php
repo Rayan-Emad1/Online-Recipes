@@ -12,20 +12,20 @@ Route::post('/signup', [AuthController::class, 'signUp']);
 
 
 Route::group(["middleware" => "auth:api"], function () {
-    Route::post('/search', [YourController::class, 'searchRecipes']);
+    Route::post('/search', [Controller::class, 'searchRecipes']);
     Route::get('/recipes', [YourController::class, 'getRecipes']);
 
-    Route::get('/recipes/personal', [YourController::class, 'getPersonalRecipes']);
-    Route::post('/add_recipe', [YourController::class, 'addRecipe']);
-    Route::post('/like', [YourController::class, 'likeRecipe']);
-    Route::post('/comment', [YourController::class, 'commentOnRecipe']);
+    Route::get('/recipes/personal', [Controller::class, 'getPersonalRecipes']);
+    Route::post('/add_recipe', [Controller::class, 'addRecipe']);
+    Route::post('/like', [Controller::class, 'likeRecipe']);
+    Route::post('/comment', [Controller::class, 'commentOnRecipe']);
 
-    Route::get('/user/likes', [YourController::class, 'getUserTotalLikes']);
-    Route::get('/user/followers', [YourController::class, 'getUserTotalFollowers']);
+    Route::get('/user/likes', [Controller::class, 'getUserTotalLikes']);
+    Route::get('/user/followers', [Controller::class, 'getUserTotalFollowers']);
     
-    Route::post('/recipe/like-toggle', [YourController::class, 'toggleLike']);
-    Route::get('/recipe/likes', [YourController::class, 'getRecipeLikes']);
+    Route::post('/recipe/like-toggle', [Controller::class, 'toggleLike']);
+    Route::get('/recipe/likes', [Controller::class, 'getRecipeLikes']);
 
-    Route::post('/add_list', [YourController::class, 'addRecipeToList']);
-    Route::get('/get_list', [YourController::class, 'getListRecipes']);
+    Route::post('/add_list', [Controller::class, 'addRecipeToList']);
+    Route::get('/get_list', [Controller::class, 'getListRecipes']);
 });

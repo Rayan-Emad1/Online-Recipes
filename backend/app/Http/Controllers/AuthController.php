@@ -55,7 +55,7 @@ class AuthController extends Controller
     public function signIn(Request $request){
 
         $validator = Validator::make($request->all(), [
-            'email' => 'required|email|max:255',
+            'email' => 'required|max:255',
             'password' => 'required|string|min:1',
         ]);
     
