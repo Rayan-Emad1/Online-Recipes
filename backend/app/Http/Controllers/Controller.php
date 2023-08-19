@@ -196,40 +196,10 @@ class Controller extends BaseController{
 
     function getPersonalInfo(Request $request){
         $user = Auth::user();
-        $personalRecipes = $user->recipes;
-        $shoppingLists = $user->shoppingLists;
-
-        $ownRecipes = [];
-        foreach ($personalRecipes as $recipe) {
-            $isLikedByUser = $recipe->likes->contains('user_id', $user->id);
-            $ownRecipe = [
-                'id' => $recipe->id,
-                'name' => $recipe->name,
-                'cuisine' => $recipe->cuisine,
-                'ingredients' => $recipe->ingredients,
-                'image_url' => $recipe->image_url,
-                'likes' => $recipe->likes->count(), 
-                'is_liked_by_user' => $isLikedByUser
-            ];
-            $ownRecipes[] = $ownRecipe;
-        }
-
-        $listRecipes = [];
-        foreach ($shoppingLists as $shoppingList) {
-            $recipe = $shoppingList->recipe;
-            $recipeOwner = $recipe->user;
-            $listRecipe = [
-                'id' => $recipe->id,
-                'owner_name' => $recipeOwner->name,
-                'name' => $recipe->name,
-                'cuisine' => $recipe->cuisine,
-                'ingredients' => $recipe->ingredients,
-                'image_url' => $recipe->image_url,
-                
-            ];
-            $listRecipes[] = $listRecipe;
-        }
-
+        $ownRecipes = $user->recipes;
+        $shoppingLists = $user->shoppingLists->map(function ($list) {
+            return $list->getRecipeDetails();
+        });
         $totalLikes = $user->likes()->count();
         $totalFollowers = $user->followers()->count();
 
@@ -237,7 +207,7 @@ class Controller extends BaseController{
             'total_likes' => $totalLikes,
             'total_followers' => $totalFollowers,
             'personal_recipes' => $ownRecipes,
-            'list_recipes' => $listRecipes
+            'list_recipes' => $shoppingLists
         ]);
     }
 

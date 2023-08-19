@@ -15,9 +15,14 @@ class ShoppingList extends Model
     {
         return $this->belongsTo(User::class);
     }
-    
+
     public function recipe()
     {
         return $this->belongsTo(Recipe::class);
+    }
+    
+    public function getRecipeDetails()
+    {
+        return $this->recipe()->first();
     }
 }
