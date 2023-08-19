@@ -154,6 +154,28 @@ class Controller extends BaseController{
         
     }
 
+    function commentOnRecipe(Request $request){
+        $user = Auth::user();
+        $recipeId = $request->recipe_id;
+        $commentText = $request->comment_text;
+
+        $recipe = Recipe::find($recipeId);
+
+        if (! ($recipe && $commentText) ) {
+            return response()->json(['status' => 'Recipe not found'], 404);
+        }
+
+        $comment = new Comment([
+            'user_id' => $user->id,
+            'recipe_id' => $recipe->id,
+            'comment_text' => $commentText,
+        ]);
+
+        $comment->save();
+
+        return response()->json(['Message' => 'Comment Added']);
+    }
+
     
 
     
