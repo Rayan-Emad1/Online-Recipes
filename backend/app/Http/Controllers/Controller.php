@@ -11,7 +11,7 @@ use App\Models\Recipe;
 use App\Models\User;
 use App\Models\Like;
 use App\Models\Comment;
-use App\Models\List;
+use App\Models\ShoppingList;
 
 
 
@@ -80,54 +80,47 @@ class Controller extends BaseController{
         }
         return response()->json(['recipes' => $formattedRecipes]);
     }
+    
+    function getRecipeInfo(Request $request){
+        $recipeId = $request->input('recipe_id');
+        $recipe = Recipe::find($recipeId);
 
-    function getPersonalInfo(Request $request){
-        $user = Auth::user();
-        $personalRecipes = $user->recipes;
-
-        $formattedRecipes = [];
-        foreach ($personalRecipes as $recipe) {
-            $isLikedByUser = $recipe->likes->contains('user_id', $user->id);
-            $formattedRecipe = [
-                'id' => $recipe->id,
-                'name' => $recipe->name,
-                'cuisine' => $recipe->cuisine,
-                'ingredients' => $recipe->ingredients,
-                'image_url' => $recipe->image_url,
-                'likes' => $recipe->likes->count(), 
-                'is_liked_by_user' => $isLikedByUser
-            ];
-            $formattedRecipes[] = $formattedRecipe;
+        if (!$recipe) {
+            return response()->json(['status' => 'Recipe not found'], 404);
         }
 
-        $totalLikes = $user->likes()->count();
-        $totalFollowers = $user->followers()->count();
+        $likesByUsers = [];
+        foreach ($recipe->likes as $like) {
+            $likesByUsers[] = [
+                'user_name' => $like->user->name,
+            ];
+        }
+
+        $comments = [];
+        foreach ($recipe->comments as $comment) {
+            $comments[] = [
+                'user_name' => $comment->user->name,
+                'comment_text' => $comment->comment_text,
+            ];
+        }
+
+        $recipeInfo = [
+            'id' => $recipe->id,
+            'name' => $recipe->name,
+            'cuisine' => $recipe->cuisine,
+            'ingredients' => $recipe->ingredients,
+            'image_url' => $recipe->image_url,
+            'user_name' => $recipe->user->name,
+            'likes' => $recipe->likes->count(),
+            'is_liked_by_user' => $recipe->likes->contains('user_id', Auth::id()),
+            'likes_by_users' => $likesByUsers,
+            'comments' => $comments,
+        ];
 
         return response()->json([
-            'total_likes' => $totalLikes,
-            'total_followers' => $totalFollowers,
-            'personal_recipes' => $formattedRecipes,
+            'status' => 'Success',
+            'recipe_info' => $recipeInfo,
         ]);
-    }
-
-    function addRecipe(Request $request){
-        $user = Auth::user();
-
-        $data = $request->validate([
-            'name' => 'required|string|max:255',
-            'cuisine' => 'required|string|max:255',
-            'ingredients' => 'required|string',
-        ]);
-
-        $recipe = new Recipe();
-        $recipe->user_id = $user->id;
-        $recipe->name = $data['name'];
-        $recipe->cuisine = $data['cuisine'];
-        $recipe->ingredients = $data['ingredients'];
-        $recipe->image_url = $data['image_url'] ?? '';
-        $recipe->save();
-
-        return response()->json(['status' => 'Success', 'recipe' => $recipe]);
     }
 
     function likeRecipe(Request $request){
@@ -181,47 +174,95 @@ class Controller extends BaseController{
         return response()->json(['Message' => 'Comment Added']);
     }
 
-    function getRecipeInfo(Request $request){
+    public function addRecipeToList(Request $request){
+        $user = Auth::user();
         $recipeId = $request->input('recipe_id');
         $recipe = Recipe::find($recipeId);
+        
+        $isInList = ShoppingList::where('user_id', $user->id)->where('recipe_id',$recipeId )->first();
 
-        if (!$recipe) {
-            return response()->json(['status' => 'Recipe not found'], 404);
+        if ($isInList) {
+            return response()->json(['status' => 'Recipe already in shopping list'], 400);
         }
-
-        $likesByUsers = [];
-        foreach ($recipe->likes as $like) {
-            $likesByUsers[] = [
-                'user_name' => $like->user->name,
-            ];
-        }
-
-        $comments = [];
-        foreach ($recipe->comments as $comment) {
-            $comments[] = [
-                'user_name' => $comment->user->name,
-                'comment_text' => $comment->comment_text,
-            ];
-        }
-
-        $recipeInfo = [
-            'id' => $recipe->id,
-            'name' => $recipe->name,
-            'cuisine' => $recipe->cuisine,
-            'ingredients' => $recipe->ingredients,
-            'image_url' => $recipe->image_url,
-            'user_name' => $recipe->user->name,
-            'likes' => $recipe->likes->count(),
-            'is_liked_by_user' => $recipe->likes->contains('user_id', Auth::id()),
-            'likes_by_users' => $likesByUsers,
-            'comments' => $comments,
-        ];
+        $list = new ShoppingList;
+        $list->user_id = $user->id;
+        $list->recipe_id = $recipe->id;
+        $list->save();
 
         return response()->json([
-            'status' => 'Success',
-            'recipe_info' => $recipeInfo,
+            'status' => 'Recipe added to shopping list',
+            'list'=> $list]);
+    }
+
+    function getPersonalInfo(Request $request){
+        $user = Auth::user();
+        $personalRecipes = $user->recipes;
+        $shoppingLists = $user->shoppingLists;
+
+        $ownRecipes = [];
+        foreach ($personalRecipes as $recipe) {
+            $isLikedByUser = $recipe->likes->contains('user_id', $user->id);
+            $ownRecipe = [
+                'id' => $recipe->id,
+                'name' => $recipe->name,
+                'cuisine' => $recipe->cuisine,
+                'ingredients' => $recipe->ingredients,
+                'image_url' => $recipe->image_url,
+                'likes' => $recipe->likes->count(), 
+                'is_liked_by_user' => $isLikedByUser
+            ];
+            $ownRecipes[] = $ownRecipe;
+        }
+
+        $listRecipes = [];
+        foreach ($shoppingLists as $shoppingList) {
+            $recipe = $shoppingList->recipe;
+            $recipeOwner = $recipe->user;
+            $listRecipe = [
+                'id' => $recipe->id,
+                'owner_name' => $recipeOwner->name,
+                'name' => $recipe->name,
+                'cuisine' => $recipe->cuisine,
+                'ingredients' => $recipe->ingredients,
+                'image_url' => $recipe->image_url,
+                
+            ];
+            $listRecipes[] = $listRecipe;
+        }
+
+        $totalLikes = $user->likes()->count();
+        $totalFollowers = $user->followers()->count();
+
+        return response()->json([
+            'total_likes' => $totalLikes,
+            'total_followers' => $totalFollowers,
+            'personal_recipes' => $ownRecipes,
+            'list_recipes' => $listRecipes
         ]);
     }
+
+    function createRecipe(Request $request){
+        $user = Auth::user();
+
+        $data = $request->validate([
+            'name' => 'required|string|max:255',
+            'cuisine' => 'required|string|max:255',
+            'ingredients' => 'required|string',
+        ]);
+
+        $recipe = new Recipe();
+        $recipe->user_id = $user->id;
+        $recipe->name = $data['name'];
+        $recipe->cuisine = $data['cuisine'];
+        $recipe->ingredients = $data['ingredients'];
+        $recipe->image_url = $data['image_url'] ?? '';
+        $recipe->save();
+
+        return response()->json(['status' => 'Success', 'recipe' => $recipe]);
+    }
+
+
+
 
     
 

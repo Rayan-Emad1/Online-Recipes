@@ -7,15 +7,17 @@ use Illuminate\Database\Eloquent\Model;
 
 class ShoppingList extends Model
 {
-    protected $fillable = ['user_id', 'name'];
+    use HasFactory;
 
-    public function users()
+    protected $fillable = ['user_id', 'recipe_id'];
+
+    public function user()
     {
-        return $this->belongsToMany(User::class, 'lists', 'shopping_list_id', 'user_id');
+        return $this->belongsTo(User::class);
     }
-
-    public function recipes()
+    
+    public function recipe()
     {
-        return $this->belongsToMany(Recipe::class, 'lists', 'shopping_list_id', 'recipe_id');
+        return $this->belongsTo(Recipe::class);
     }
 }

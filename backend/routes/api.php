@@ -18,12 +18,11 @@ Route::group(["middleware" => "auth:api"], function () {
     
     Route::post('/like', [Controller::class, 'likeRecipe']);
     Route::post('/comment', [Controller::class, 'commentOnRecipe']);
-    Route::post('/add_list', [Controller::class, 'addRecipeToList']);
+    Route::post('/add_recipe', [Controller::class, 'addRecipeToList']);
     
     Route::get('/personal_info', [Controller::class, 'getPersonalInfo']);
-    Route::get('/get_list', [Controller::class, 'getListRecipes']);
-    Route::post('/add_recipe', [Controller::class, 'addRecipe']);
-    Route::get('/follow_user', [Controller::class, 'FollowUser']);
+    Route::post('/create_recipe', [Controller::class, 'createRecipe']);
+    //Route::get('/follow_user', [Controller::class, 'FollowUser']);
     
 
 });
