@@ -83,5 +83,25 @@ class Controller extends BaseController{
         return response()->json(['recipes' => $formattedRecipes]);
     }
 
+    public function getPersonalRecipes(Request $request){
+        $user = Auth::user();
+        $personalRecipes = $user->recipes;
+
+        $formattedRecipes = [];
+        foreach ($personalRecipes as $recipe) {
+            $formattedRecipe = [
+                'id' => $recipe->id,
+                'name' => $recipe->name,
+                'cuisine' => $recipe->cuisine,
+                'ingredients' => $recipe->ingredients,
+                'image_url' => $recipe->image_url,
+                'likes' => $recipe->likes->count(), 
+            ];
+            $formattedRecipes[] = $formattedRecipe;
+        }
+
+        return response()->json(['personal_recipes' => $formattedRecipes]);
+    }
+
     
 }
