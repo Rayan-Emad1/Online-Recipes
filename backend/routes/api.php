@@ -13,9 +13,9 @@ Route::post('/signup', [AuthController::class, 'signUp']);
 
 Route::group(["middleware" => "auth:api"], function () {
     Route::post('/search', [Controller::class, 'searchRecipes']);
-    Route::get('/recipes', [YourController::class, 'getRecipes']);
-
+    Route::get('/recipes', [Controller::class, 'getRecipes']);
     Route::get('/recipes/personal', [Controller::class, 'getPersonalRecipes']);
+    
     Route::post('/add_recipe', [Controller::class, 'addRecipe']);
     Route::post('/like', [Controller::class, 'likeRecipe']);
     Route::post('/comment', [Controller::class, 'commentOnRecipe']);

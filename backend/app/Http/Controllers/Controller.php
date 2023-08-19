@@ -22,24 +22,24 @@ class Controller extends BaseController{
         $this->middleware('auth:api');
     }
 
-
     function getRecipes(Request $request){
-
         $user = Auth::user();
-        $followingIds = Follower::where('follower_id', $user->id)->pluck('following_id')->toArray();
-        $recipes = Recipe::whereIn('user_id', $followingIds)->get();
+        $followingUserIds = $user->followings->pluck('id')->toArray();
+
+        $recipes = Recipe::whereIn('user_id', $followingUserIds)->with('user', 'likes')->get();
 
         $formattedRecipes = [];
         foreach ($recipes as $recipe) {
-            $user = $recipe->user;
+            $isLikedByUser = $recipe->likes->contains('user_id', $user->id);
             $formattedRecipes[] = [
                 'id' => $recipe->id,
                 'name' => $recipe->name,
                 'cuisine' => $recipe->cuisine,
                 'ingredients' => $recipe->ingredients,
                 'image_url' => $recipe->image_url,
-                'user_name' => $user->name,
+                'user_name' => $recipe->user->name,
                 'likes' => $recipe->likes->count(),
+                'is_liked_by_user' => $isLikedByUser,
             ];
         }
 
@@ -87,6 +87,7 @@ class Controller extends BaseController{
 
         $formattedRecipes = [];
         foreach ($personalRecipes as $recipe) {
+            $isLikedByUser = $recipe->likes->contains('user_id', $user->id);
             $formattedRecipe = [
                 'id' => $recipe->id,
                 'name' => $recipe->name,
@@ -94,11 +95,14 @@ class Controller extends BaseController{
                 'ingredients' => $recipe->ingredients,
                 'image_url' => $recipe->image_url,
                 'likes' => $recipe->likes->count(), 
+                'is_liked_by_user' => $isLikedByUser
             ];
             $formattedRecipes[] = $formattedRecipe;
         }
 
-        return response()->json(['personal_recipes' => $formattedRecipes]);
+        return response()->json([
+            'personal_recipes' => $formattedRecipes
+        ]);
     }
 
     function addRecipe(Request $request){
@@ -121,6 +125,36 @@ class Controller extends BaseController{
         return response()->json(['status' => 'Success', 'recipe' => $recipe]);
     }
 
+    function likeRecipe(Request $request){
+        $user = Auth::user();
+        $recipeId = $request->input('recipe_id');
+
+        $recipe = Recipe::find($recipeId);
+
+        if (!$recipe) {
+            return response()->json(['status' => 'Recipe not found'], 404);
+        }
+
+        $existingLike = Like::where('user_id', $user->id)
+                            ->where('recipe_id', $recipe->id)
+                            ->first();
+
+        if ($existingLike) {
+            $existingLike->delete();
+            return response()->json(['Message' => 'Unliked']);
+
+        } else {
+            $like = new Like;
+            $like->user_id = $user->id;
+            $like->recipe_id = $recipe->id;
+            $like->save();
+            return response()->json(['Message' => 'liked']);
+        }
+
+        
+    }
+
     
+
     
 }
