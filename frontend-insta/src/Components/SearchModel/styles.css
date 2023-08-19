@@ -1,0 +1,24 @@
+.search-modal{
+    position: fixed;
+    left: 50%;
+    top: 75px;
+    width: 200px;
+    padding: 20px;
+    background-color: lightgray;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.search-results {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    grid-row-gap: 10px;
+}
+
+.close-search-button{
+    background-color: lightgray;
+    border: 2px solid white;
+}

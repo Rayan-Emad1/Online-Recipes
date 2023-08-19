@@ -1,0 +1,33 @@
+.post-card{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-width: 300px;
+    min-height: 300px;
+    grid-row-gap: 10px;
+    border: 2px solid black ;
+    border-radius: 30px;
+}
+
+h3 { 
+    padding: 0;
+    margin: 0;
+}
+.like-container{
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 200px;
+}
+
+.like-button-post{
+
+}
+
+.post-image{
+    width: 200px;
+     height: 200px;
+    object-fit: contain;
+}

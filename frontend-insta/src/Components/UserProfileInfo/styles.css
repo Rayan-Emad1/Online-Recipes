@@ -1,0 +1,13 @@
+.user-status{
+    display: flex;
+    justify-content: space-between;
+
+}
+
+.user-profile-info{
+    padding: 20px 60px; 
+}
+
+.user-input{
+    width: 20%;
+}

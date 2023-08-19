@@ -1,0 +1,55 @@
+.center{
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.signin-form{
+    padding: 20px;
+    width:400px;
+    height: 400px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    grid-row-gap: 20px;
+    border: 2px solid black;
+}
+
+.submit {
+    color: rgb(255, 255, 255);
+    font-family: "Google Sans", Roboto, Arial, sans-serif;
+    font-size: 0.875rem;
+    background-color: #1a73e8;
+    border-radius: 5px;
+    width: 80px;
+    height: 36px;
+    border: none;
+    cursor: pointer;
+}
+
+.submit:nth-child(2){
+    color: #1a73e8;
+    background-color: white;
+    border: 4px solid white;
+}
+
+.input-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: flex-start;
+    width: 90%;
+}
+
+input {
+    height: 40px;
+    width: 100%;
+    align-self: flex-start;
+}
+
+h1 {
+    font-family: Helvetica, Arial, and San Serif;
+}
