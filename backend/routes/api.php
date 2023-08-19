@@ -11,19 +11,21 @@ Route::post('/signin', [AuthController::class, 'signIn']);
 Route::post('/signup', [AuthController::class, 'signUp']);
 
 
-Route::group(["middleware" => "auth:api"], function(){
-    Route::post('/users/search', [Controller::class, 'searchUsers']);
-    Route::get('/posts', [Controller::class, 'getPosts']);
+Route::group(["middleware" => "auth:api"], function () {
+    Route::post('/search', [YourController::class, 'searchRecipes']);
+    Route::get('/recipes', [YourController::class, 'getRecipes']);
 
-    Route::get('/posts/personal', [Controller::class, 'getPersonalPosts']);
-    Route::post('/addpost', [Controller::class, 'addPost']);
-    Route::post('/follow', [Controller::class, 'addFollower']);
-    Route::post('/unfollow', [Controller::class, 'unfollowUser']);
+    Route::get('/recipes/personal', [YourController::class, 'getPersonalRecipes']);
+    Route::post('/add_recipe', [YourController::class, 'addRecipe']);
+    Route::post('/like', [YourController::class, 'likeRecipe']);
+    Route::post('/comment', [YourController::class, 'commentOnRecipe']);
 
-    Route::get('/user/likes', [Controller::class, 'getUserTotalLikes']);
-    Route::get('/user/followers', [Controller::class, 'getUserTotalFollowers']);
+    Route::get('/user/likes', [YourController::class, 'getUserTotalLikes']);
+    Route::get('/user/followers', [YourController::class, 'getUserTotalFollowers']);
     
-    Route::post('/like', [Controller::class, 'toggleLike']);
-    Route::post('/post/likes', [Controller::class, 'getPostLikes']); // wanted to get names of whom liked the photos
+    Route::post('/recipe/like-toggle', [YourController::class, 'toggleLike']);
+    Route::get('/recipe/likes', [YourController::class, 'getRecipeLikes']);
 
+    Route::post('/add_list', [YourController::class, 'addRecipeToList']);
+    Route::get('/get_list', [YourController::class, 'getListRecipes']);
 });

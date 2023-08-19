@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('recipes', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained();
+            $table->unsignedBigInteger('user_id');
             $table->string('name');
             $table->string('cuisine');
             $table->text('ingredients');
@@ -30,23 +30,23 @@ return new class extends Migration
 
         Schema::create('likes', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id');
-            $table->foreignId('recipe_id');
+            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('recipe_id');
             $table->timestamps();
         });
 
         Schema::create('comments', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained();
-            $table->foreignId('recipe_id')->constrained();
+            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('recipe_id');
             $table->text('comment_text');
             $table->timestamps();
         });
 
         Schema::create('list_recipes', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('list_id');
-            $table->foreignId('recipe_id');
+            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('recipe_id');
             $table->timestamps();
         });
 
