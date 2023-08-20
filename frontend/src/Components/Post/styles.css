@@ -1,4 +1,4 @@
-.post-card{
+.recipe-card{
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -22,12 +22,12 @@ h3 {
     width: 200px;
 }
 
-.like-button-post{
+.like-button-recipe{
 
 }
 
-.post-image{
+.recipe-image{
     width: 200px;
-     height: 200px;
+    height: 200px;
     object-fit: contain;
 }

@@ -1,14 +1,14 @@
 import React from 'react';
 import Header from '../../Components/Header';
-import UserProfileInfo from '../../Components/UserProfileInfo'; // Adjust the path based on your folder structure
-import PostContainer from '../../Components/PostsContainer'
+import UserProfileInfo from '../../Components/UserProfileInfo';
+import RecipesContainer from '../../Components/RecipesContainer'
  
 const Profile = () => {
   return (
     <>
       <Header />
       <UserProfileInfo />
-      <PostContainer url = {'/posts/personal'} />
+      <RecipesContainer url = {'/posts/personal'} />
     </>
   );
 };

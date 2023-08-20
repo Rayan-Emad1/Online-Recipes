@@ -1,52 +1,48 @@
 import React, { useState } from 'react';
 import './styles.css';
 
-const Post = ({ post, getPosts }) => {
+const Recipe = ({ recipe, getRecipes }) => {
   const token = localStorage.getItem('token');
-  const [isLiked, setIsLiked] = useState('');
+  
 
-  const handleLikeToggle = async (postId) => {
-    try {
-      if (!token) {
-        console.log('Token not found.');
-        return;
-      }
-
-      const response = await fetch('http://127.0.0.1:8000/api/like', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ post_id: postId }),
-      });
-
-      const data = await response.json();
-      console.log('Like post response:', data);
-      setIsLiked(data.message);
-      console.log(isLiked)
-      getPosts();
-
-    } catch (error) {
+  const likeRecipe = (recipeId) => {
+  
+    fetch('http://127.0.0.1:8000/api/like', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ recipe_id: recipeId }),
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log('Like recipe response:', data);
+      getRecipes();
+    })
+    .catch(error => {
       console.log('Error:', error);
-    }
+    });
   };
+  
 
   return (
-    <div className="post-card">
-      <img className='post-image' src={post.image_url} alt={`Post by ${post.user_name}`} />
-      <h3>{post.user_name}</h3>
+    <div className="recipe-card">
+      <img className='recipe-image' src={`https://picsum.photos/${recipe.id}`} alt={`recipe by ${recipe.user_name}`} />
+      <h3>{recipe.name}</h3>
       <div className='like-container'>
-        <span>Likes: {post.likes}</span>
-        <button
-          className={`like-button-post ${isLiked === 'Post unliked.' ? 'unlike' : ''}`}
-          onClick={() => handleLikeToggle(post.id)}
-        >
-          {isLiked === 'Post unliked.' ? 'Unlike' : 'Like'}
+        
+        <button className={`like-button-recipe`} onClick={() => likeRecipe(recipe.id)}>
+          Add to Cart
         </button>
+
+        <button className={`like-button-recipe`} onClick={() => likeRecipe(recipe.id)}>
+          {recipe.is_liked_by_user? 'Unlike' : 'Like'}
+        </button>
+
       </div>
     </div>
   );
 };
 
-export default Post;
+export default Recipe;

@@ -45,7 +45,7 @@ const SignIn = () => {
   return (
     <div className='center'>
       <div className='signin-form'>
-        <h1><i>Instagram</i></h1>
+        <h1>Online Recipes</h1>
         <div className='input-container '>
           <label>Email:</label>
           <input type="text" value={email} onChange={(e) => setEmail(e.target.value)} />
