@@ -12,7 +12,8 @@ Route::post('/signup', [AuthController::class, 'signUp']);
 
 
 Route::group(["middleware" => "auth:api"], function () {
-    Route::post('/search', [Controller::class, 'searchRecipes']);
+    
+    Route::post('/search_recipe', [Controller::class, 'searchRecipes']);
     Route::get('/recipes', [Controller::class, 'getRecipes']);
     Route::post('/recipe_info', [Controller::class, 'getRecipeInfo']);
     
@@ -22,7 +23,7 @@ Route::group(["middleware" => "auth:api"], function () {
     
     Route::get('/personal_info', [Controller::class, 'getPersonalInfo']);
     Route::post('/create_recipe', [Controller::class, 'createRecipe']);
-    //Route::get('/follow_user', [Controller::class, 'FollowUser']);
-    
+    Route::post('/toggle_follow', [Controller::class, 'toggleFollowUser']);
+    Route::post('/search_user', [Controller::class, 'searchUsers']);
 
 });

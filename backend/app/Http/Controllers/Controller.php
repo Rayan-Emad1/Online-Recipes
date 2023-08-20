@@ -12,7 +12,7 @@ use App\Models\User;
 use App\Models\Like;
 use App\Models\Comment;
 use App\Models\ShoppingList;
-
+use App\Models\Follower;
 
 
 class Controller extends BaseController{
@@ -174,7 +174,7 @@ class Controller extends BaseController{
         return response()->json(['Message' => 'Comment Added']);
     }
 
-    public function addRecipeToList(Request $request){
+    function addRecipeToList(Request $request){
         $user = Auth::user();
         $recipeId = $request->input('recipe_id');
         $recipe = Recipe::find($recipeId);
@@ -231,10 +231,63 @@ class Controller extends BaseController{
         return response()->json(['status' => 'Success', 'recipe' => $recipe]);
     }
 
-
-
-
+    function toggleFollowUser(Request $request){
+        $user = Auth::user();
+        $followingId = $request->input('following_id');
     
+        $isFollowing = Follower::where('follower_id', $user->id)
+            ->where('following_id', $followingId)
+            ->exists();
+    
+        if ($isFollowing) {
+            Follower::where('follower_id', $user->id)
+                ->where('following_id', $followingId)
+                ->delete();
+    
+            return response()->json([
+                'status' => 'Success',
+                'message' => 'You have unfollowed the user.',
+                'is_following' => false,
+            ]);
+        } else {
+            Follower::create([
+                'follower_id' => $user->id,
+                'following_id' => $followingId,
+            ]);
+    
+            return response()->json([
+                'status' => 'Success',
+                'message' => 'You are now following the user.',
+                'is_following' => true,
+            ]);
+        }
+    }
 
+    function searchUsers(Request $request){
+        $query = $request->input('query');
+    
+        $users = User::where('name', 'LIKE', "%$query%")->get();
+    
+        $formattedUsers = [];
+        foreach ($users as $user) {
+            $isFollowing = Follower::where('follower_id', Auth::id())
+                ->where('following_id', $user->id)
+                ->exists();
+    
+            $formattedUser = [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'is_following' => $isFollowing,
+            ];
+    
+            $formattedUsers[] = $formattedUser;
+        }
+    
+        return response()->json([
+            'status' => 'Success',
+            'users' => $formattedUsers,
+        ]);
+    }
     
 }
