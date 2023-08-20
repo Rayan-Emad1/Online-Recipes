@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './styles.css';
 
 const UserCard = ({ user, onFollow }) => {
   const token = localStorage.getItem('token');
-  const [isFollowing, setIsFollowing] = useState(false);
+  const [isFollowing, setIsFollowing] = useState(user.is_following);
 
   const handleFollow = async (followingId) => {
     try {
-      const response = await fetch('http://127.0.0.1:8000/api/follow', {
+      const response = await fetch('http://127.0.0.1:8000/api/toggle_follow', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -18,40 +18,22 @@ const UserCard = ({ user, onFollow }) => {
 
       const data = await response.json();
       console.log(data.message);
-      setIsFollowing(true);
+      setIsFollowing(data.is_following);
 
     } catch (error) {
       console.log('Error:', error);
     }
   };
 
-  const handleUnfollow = async (followingId) => {
-    try {
-
-      const response = await fetch('http://127.0.0.1:8000/api/unfollow', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ following_id: followingId }),
-      });
-
-      const data = await response.json();
-      console.log(data.message);
-
-      setIsFollowing(false);
-
-    } catch (error) {
-      console.log('Error:', error);
-    }
-  };
+  useEffect(() => {
+    setIsFollowing(user.is_following);
+  }, [user.is_following]);
 
   return (
     <div className="user-card">
       <span>{user.name}</span>
       {isFollowing ? (
-        <button className="follow-button unfollow" onClick={() => handleUnfollow(user.id)}>
+        <button className="follow-button unfollow" onClick={() => handleFollow(user.id)}>
           Unfollow
         </button>
       ) : (

@@ -19,7 +19,7 @@ const Searchbar = ({setSearchResults , setShowModal}) => {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify({ name: searchQuery }),
+          body: JSON.stringify({ query: searchQuery }),
         });
     
         const data = await response.json();
