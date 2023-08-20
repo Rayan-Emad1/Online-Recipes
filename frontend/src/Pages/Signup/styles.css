@@ -36,7 +36,8 @@ button {
     width: 90%;
 }
 
-input {
+.signup-form input,
+.signin-form input  {
     height: 40px;
     width: 100%;
     align-self: flex-start;

@@ -1,76 +1,105 @@
 .center-overlap {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 100;
-  }
-  
-  .recipe-info-card {
-    display: flex;
-    grid-column-gap: 30px ;
-    background-color: white;
-    width: 967px;
-    padding: 35px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 90;
+}
 
-  .right-sec * {
-    margin: 0;
-  }
+.close-info {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
+  color: #555;
+}
 
-  .left-sec{
-    flex: 1;
-  }
+.recipe-info-card {
+  display: flex;
+  position: fixed;
+  background-color: white;
+  width: 967px;
+  padding: 35px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 800;
+}
 
-  .right-sec{
-    display: flex;
-    flex-direction: column;
-    flex: 2;
-    grid-row-gap:20px;    
-  }
+.left-sec {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
 
-  .info-card-img{
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    display: flex;
-    justify-content:center ;
-    align-items: center;
-  }
-  
-  
-  .likes-by-users h3,
-  .comments h3 {
-    font-size: 18px;
-    margin-top: 20px;
-    margin-bottom: 10px;
-  }
-  
-  .likes-by-users ul,
-  .comments ul {
-    list-style: none;
-    padding: 0;
-  }
-  
-  .likes-by-users li,
-  .comments li {
-    margin-bottom: 5px;
-  }
-  
-  .likes-by-users li:before,
-  .comments li:before {
-    content: '•';
-    margin-right: 5px;
-  }
+.right-sec {
+  flex: 2;
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  grid-row-gap: 20px;
+}
 
-  .statistics{
-    display: flex;
-  }
-  
+.info-card-img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+h1, h4, p {
+  margin: 0;
+}
+
+.statistics {
+  display: flex;
+  justify-content: space-around;
+}
+
+.likes-by-users h3,
+.comments h3 {
+  font-size: 18px;
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+.likes-by-users ul,
+.comments ul {
+  list-style: none;
+  padding: 0;
+}
+
+.likes-by-users li,
+.comments li {
+  margin-bottom: 5px;
+}
+
+.likes-by-users li:before,
+.comments li:before {
+  content: '•';
+  margin-right: 5px;
+}
+
+.add-comment-button {
+  width: 127px;
+  height: 100%;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.add-comment-button:hover {
+  background-color: #0056b3;
+}
+
+ input {
+  height: 30px;
+}
