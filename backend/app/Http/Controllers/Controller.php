@@ -31,6 +31,8 @@ class Controller extends BaseController{
         $formattedRecipes = [];
         foreach ($recipes as $recipe) {
             $isLikedByUser = $recipe->likes->contains('user_id', $user->id);
+            $isInList = ShoppingList::where('user_id', $user->id)->where('recipe_id', $recipe->id)->exists();
+
             $formattedRecipes[] = [
                 'id' => $recipe->id,
                 'name' => $recipe->name,
@@ -40,6 +42,7 @@ class Controller extends BaseController{
                 'user_name' => $recipe->user->name,
                 'likes' => $recipe->likes->count(),
                 'is_liked_by_user' => $isLikedByUser,
+                'is_in_list' => $isInList,
             ];
         }
 
@@ -123,7 +126,7 @@ class Controller extends BaseController{
         ]);
     }
 
-    function likeRecipe(Request $request){
+    function togglelikeRecipe(Request $request){
         $user = Auth::user();
         $recipeId = $request->input('recipe_id');
 
@@ -174,24 +177,27 @@ class Controller extends BaseController{
         return response()->json(['Message' => 'Comment Added']);
     }
 
-    function addRecipeToList(Request $request){
+    function toggleRecipeInList(Request $request){
         $user = Auth::user();
         $recipeId = $request->input('recipe_id');
         $recipe = Recipe::find($recipeId);
-        
-        $isInList = ShoppingList::where('user_id', $user->id)->where('recipe_id',$recipeId )->first();
-
-        if ($isInList) {
-            return response()->json(['status' => 'Recipe already in shopping list'], 400);
+    
+        $list = ShoppingList::where('user_id', $user->id)->where('recipe_id', $recipeId)->first();
+    
+        if ($list) {
+            $list->delete();
+            return response()->json(['status' => 'Recipe removed from shopping list']);
+        } else {
+            $newList = new ShoppingList;
+            $newList->user_id = $user->id;
+            $newList->recipe_id = $recipe->id;
+            $newList->save();
+    
+            return response()->json([
+                'status' => 'Recipe added to shopping list',
+                'list' => $newList
+            ]);
         }
-        $list = new ShoppingList;
-        $list->user_id = $user->id;
-        $list->recipe_id = $recipe->id;
-        $list->save();
-
-        return response()->json([
-            'status' => 'Recipe added to shopping list',
-            'list'=> $list]);
     }
 
     function getPersonalInfo(Request $request){
