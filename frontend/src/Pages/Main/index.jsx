@@ -4,11 +4,12 @@ import RecipesContainer from '../../Components/RecipesContainer'
 import './styles.css'
 
 const Main = () => {
+  const [searchRecipe,setSearchRecipe] = useState([])
 
   return (
     <div className="main-container">
-      <Header />
-      <RecipesContainer url = {'/recipes'} islist={false} />
+      <Header setSearchRecipe={setSearchRecipe} />
+      <RecipesContainer url = {'/recipes'} searchRecipe={searchRecipe}  islist={false} />
     </div>
   );
 };

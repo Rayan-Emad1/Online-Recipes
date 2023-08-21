@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './styles.css';
 
-const Searchbar = ({ setSearchResults, setShowModal, mainSearch }) => {
+const Searchbar = ({ setSearchResults, setShowModal, mainSearch,setSearchRecipe }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const token = localStorage.getItem('token');
 
@@ -23,8 +23,9 @@ const Searchbar = ({ setSearchResults, setShowModal, mainSearch }) => {
         });
 
         const data = await response.json();
-        setSearchResults(data.recipes);
-        setShowModal(true);
+        setSearchRecipe(data.recipes);
+
+        
       } else {
         const response = await fetch('http://127.0.0.1:8000/api/search_user', {
           method: 'POST',

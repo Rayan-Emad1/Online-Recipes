@@ -4,7 +4,7 @@ import SearchModal from '../SearchModel';
 import Searchbar from '../Searchbar';
 import './styles.css';
 
-const Header = () => {
+const Header = ({setSearchRecipe}) => {
   const [searchResults, setSearchResults] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
@@ -16,15 +16,16 @@ const Header = () => {
   };
 
   const OpenProfile = () => {
-    navigate('/profile')
+    navigate('/profile');
   }
 
   const Logout = () => {
-    navigate('/')
+    navigate('/');
   }
   
   const goHome = () => {
-    navigate('/main')
+    if(mainSearch) {setSearchRecipe([])};
+    navigate('/main');
   }
   
   const mainSearch = location.pathname === '/main';
@@ -34,7 +35,7 @@ const Header = () => {
       <div className="header-content">
         <div className="logo" onClick={goHome}>Online Recipes</div>
         {mainSearch ? (
-          <Searchbar setSearchResults={setSearchResults} setShowModal={setShowModal} mainSearch={mainSearch} />
+          <Searchbar setSearchResults={setSearchResults} mainSearch={mainSearch} setSearchRecipe={setSearchRecipe} />
         ) : (
           <Searchbar setSearchResults={setSearchResults} setShowModal={setShowModal} mainSearch={mainSearch} />
         )}
