@@ -16,26 +16,19 @@ const UserProfileInfo = () => {
         return;
       }
 
-      const likesResponse = await fetch('http://127.0.0.1:8000/api/user/likes', {
+      const Response = await fetch('http://127.0.0.1:8000/api/personal_info', {
         method: 'GET',
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
 
-      const followersResponse = await fetch('http://127.0.0.1:8000/api/user/followers', {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const Data = await Response.json();
+   
 
-      const likesData = await likesResponse.json();
-      const followersData = await followersResponse.json();
-
-      setName(likesData.user_name);
-      setTotalLikes(likesData.total_likes);
-      setTotalFollowers(followersData.total_followers);
+      setName(Data.user_name);
+      setTotalLikes(Data.total_likes);
+      setTotalFollowers(Data.total_followers);
 
     } catch (error) {
       console.log('Error:', error);
@@ -72,7 +65,11 @@ const UserProfileInfo = () => {
   useEffect(() => {
     fetchUserInfo();
 
-  }, []); 
+  }, []);
+  
+  if (!totalLikes) {
+    return null;
+  }
 
   return (
     <div className="user-profile-info">
@@ -81,10 +78,10 @@ const UserProfileInfo = () => {
         <p>Total Likes: {totalLikes}</p>
         <p>Total Followers: {totalFollowers}</p>
       </div>
-      <div className='user-input'>
+      {/* <div className='user-input'>
         <input type="text" placeholder="Image URL" value={newPostImageUrl} onChange={(e) => setNewPostImageUrl(e.target.value)} />
         <button onClick={handleAddPost}>Add Post</button>
-      </div>
+      </div> */}
 
     </div>
   );
