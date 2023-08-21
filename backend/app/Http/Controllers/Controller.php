@@ -245,13 +245,19 @@ class Controller extends BaseController{
             'cuisine' => 'required|string|max:255',
             'ingredients' => 'required|string',
         ]);
+        
+        base64_decode($request->image);
+        $image = $request->image;
+        $image_name = time().'.'.$request->image->extension();  
+        $image->move(public_path('/images'), $image_name);
+        $image_url = asset('images/' . $image_name);
 
         $recipe = new Recipe();
         $recipe->user_id = $user->id;
         $recipe->name = $data['name'];
         $recipe->cuisine = $data['cuisine'];
         $recipe->ingredients = $data['ingredients'];
-        $recipe->image_url = $data['image_url'] ?? '';
+        $recipe->image_url = $image_url ?? "" ;
         $recipe->save();
 
         return response()->json(['status' => 'Success', 'recipe' => $recipe]);
