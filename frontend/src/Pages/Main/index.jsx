@@ -8,7 +8,7 @@ const Main = () => {
   return (
     <div className="main-container">
       <Header />
-      <RecipesContainer url = {'/recipes'} />
+      <RecipesContainer url = {'/recipes'} islist={false} />
     </div>
   );
 };

@@ -4,11 +4,10 @@ import './styles.css';
 import RecipeInfo from '../RecipeInfo';
 
 
-const RecipesContainer = ({ url }) => {
-  const [recipes,setRecipes] = useState([]);
-  const [recipe_id,setRecipeId] = useState(null);
+const RecipesContainer = ({ url, islist = true, refreshRecipes }) => {
+  const [recipes, setRecipes] = useState([]);
+  const [recipe_id, setRecipeId] = useState(null);
   const token = localStorage.getItem('token');
-
 
   const getRecipes = () => {
     fetch(`http://127.0.0.1:8000/api${url}`, {
@@ -20,34 +19,40 @@ const RecipesContainer = ({ url }) => {
     })
     .then(response => response.json())
     .then(data => {
-      setRecipes(data.recipes);
+      if (url === '/personal_info') {
+        if (islist) {
+          setRecipes(data.list_recipes);
+        } else {
+          setRecipes(data.personal_recipes);
+        }
+      } else {
+        setRecipes(data.recipes);
+      }
     })
     .catch(error => {
       console.log('Error:', error);
     });
   };
 
-
   useEffect(() => {
     getRecipes();
-  }, [url]);
+  }, [url, islist]);
 
-  if (recipes.length === 0) {
-    return <div>No Recipes...Follow People or Create Your Own!</div>;
-  }
-  
   return (
     <>
       <div className="content">
         <div className="recipe-container">
-          {recipes.map(recipe => (
-            <Recipe key={recipe.id} recipe={recipe}  getRecipes={getRecipes} setRecipeId={setRecipeId} />
-          ))}
+          {recipes.length === 0 ? (
+            islist ? <div>No List Recipes...</div> : <div>No Personal Recipes...</div>
+          ) : (
+            recipes.map(recipe => (
+              <Recipe key={recipe.id} recipe={recipe} getRecipes={getRecipes} setRecipeId={setRecipeId} islist={islist}  />
+            ))
+          )}
         </div>
       </div>
       {recipe_id && <RecipeInfo recipe_id={recipe_id} setRecipeId={setRecipeId} />}
     </>
-
   );
 };
 

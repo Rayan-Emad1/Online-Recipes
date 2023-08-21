@@ -1,7 +1,7 @@
 import React, { useState,useEffect } from 'react';
 import './styles.css';
 
-const Recipe = ({ recipe, getRecipes, setRecipeId }) => {
+const Recipe = ({ recipe, getRecipes, setRecipeId, islist }) => {
   const token = localStorage.getItem('token');
   
 
@@ -51,12 +51,12 @@ const Recipe = ({ recipe, getRecipes, setRecipeId }) => {
       <div className='like-container'>
         
         <button className={`like-button-recipe`} onClick={() => ToggleList(recipe.id)}>
-        {recipe.is_in_list? 'Remove Cart' : 'Add Cart'}
+        {recipe.is_in_list || islist ? 'Remove Cart' : 'Add Cart'}
         </button>
-
-        <button className={`like-button-recipe`} onClick={() => Togglelike(recipe.id)}>
-          {recipe.is_liked_by_user? 'Unlike' : 'Like'}
-        </button>
+        {!islist && <button className={`like-button-recipe`} onClick={() => Togglelike(recipe.id)}>
+          {recipe.is_liked_by_user ? 'Unlike' : 'Like'}
+        </button> }
+        
 
       </div>
     </div>

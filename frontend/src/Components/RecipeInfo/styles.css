@@ -106,6 +106,6 @@ h1, h4, p {
   background-color: #0056b3;
 }
 
- input {
+ .add-comment-container input {
   height: 30px;
 }
