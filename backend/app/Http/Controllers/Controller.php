@@ -203,16 +203,35 @@ class Controller extends BaseController{
     function getPersonalInfo(Request $request){
         $user = Auth::user();
         $ownRecipes = $user->recipes;
+    
+        $formattedOwnRecipes = $ownRecipes->map(function ($recipe) use ($user) {
+            $isLikedByUser = $recipe->likes->contains('user_id', $user->id);
+            $isInList = ShoppingList::where('user_id', $user->id)->where('recipe_id', $recipe->id)->exists();
+    
+            return [
+                'id' => $recipe->id,
+                'name' => $recipe->name,
+                'cuisine' => $recipe->cuisine,
+                'ingredients' => $recipe->ingredients,
+                'image_url' => $recipe->image_url,
+                'user_name' => $user->name,
+                'likes' => $recipe->likes->count(),
+                'is_liked_by_user' => $isLikedByUser,
+                'is_in_list' => $isInList,
+            ];
+        });
+
         $shoppingLists = $user->shoppingLists->map(function ($list) {
             return $list->getRecipeDetails();
         });
         $totalLikes = $user->likes()->count();
         $totalFollowers = $user->followers()->count();
-
+    
         return response()->json([
+            'user_name' => $user->name,
             'total_likes' => $totalLikes,
             'total_followers' => $totalFollowers,
-            'personal_recipes' => $ownRecipes,
+            'personal_recipes' => $formattedOwnRecipes,
             'list_recipes' => $shoppingLists
         ]);
     }
