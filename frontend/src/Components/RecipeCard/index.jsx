@@ -46,7 +46,7 @@ const Recipe = ({ recipe, getRecipes, setRecipeId, islist }) => {
 
   return (
     <div className="recipe-card">
-      <img className='recipe-image' src={`https://picsum.photos/200`} alt={`recipe by ${recipe.user_name}`} onClick={()=>setRecipeId(recipe.id)}/>
+      <img className='recipe-image' src={recipe.image_url} alt={`recipe by ${recipe.user_name}`} onClick={()=>setRecipeId(recipe.id)}/>
       <h3>{recipe.name}</h3>
       <div className='like-container'>
         

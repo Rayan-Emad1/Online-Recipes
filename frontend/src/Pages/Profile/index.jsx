@@ -3,7 +3,7 @@ import Header from '../../Components/Header';
 import UserProfileInfo from '../../Components/UserProfileInfo';
 import RecipesContainer from '../../Components/RecipesContainer';
 import './styles.css';
-
+import CreateRecipe from "../../Components/CreateRecipe"
 const Profile = () => {
   const [personalButton, setPersonalButton] = useState(true);
   const [refreshRecipes, setRefreshRecipes] = useState(false);
@@ -27,6 +27,7 @@ const Profile = () => {
         <button className={!personalButton ? 'active' : ''} onClick={() => setPersonalButton(false)}>
           List Recipes
         </button>
+        <CreateRecipe className="create-form"/>
       </div>
 
       <RecipesContainer

@@ -4,7 +4,8 @@
     margin-bottom: 20px;
   }
   
-  .button-container-profile button {
+  .button-container-profile button,
+  .create-form {
     border: none;
     width: fit-content;
     padding: 10px 20px;

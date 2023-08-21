@@ -58,7 +58,7 @@ function RecipeInfo({ recipe_id, setRecipeId }) {
     <div className='center-overlap' >
       <div className='recipe-info-card'>
         <div className='left-sec'>
-          <img className="info-card-img" src="https://picsum.photos/200" alt="" />
+          <img className="info-card-img" src={recipeInfo.image_url} alt="" />
         </div>
         <div className='right-sec'>
           <h1 className='close-info' onClick={ () => setRecipeId(null)} >X</h1>
