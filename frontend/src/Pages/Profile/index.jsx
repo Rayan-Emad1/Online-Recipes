@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Header from '../../Components/HeaderProfile';
+import Header from '../../Components/Header';
 import UserProfileInfo from '../../Components/UserProfileInfo';
 import RecipesContainer from '../../Components/RecipesContainer';
 import './styles.css';
@@ -7,6 +7,7 @@ import './styles.css';
 const Profile = () => {
   const [personalButton, setPersonalButton] = useState(true);
   const [refreshRecipes, setRefreshRecipes] = useState(false);
+  
 
   useEffect(() => {
     if (refreshRecipes) {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Header from '../../Components/HeaderProfile';
+import Header from '../../Components/Header';
 import RecipesContainer from '../../Components/RecipesContainer'
 import './styles.css'
 
