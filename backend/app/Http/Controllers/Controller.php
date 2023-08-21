@@ -53,6 +53,7 @@ class Controller extends BaseController{
     }
 
     function searchRecipes(Request $request){
+        $user = Auth::user();
         $query = $request->input('query', '');
 
         $queryBuilder = Recipe::query();
@@ -67,6 +68,8 @@ class Controller extends BaseController{
 
         $formattedRecipes = [];
         foreach ($recipes as $recipe) {
+            $isLikedByUser = $recipe->likes->contains('user_id', $user->id);
+            $isInList = ShoppingList::where('user_id', $user->id)->where('recipe_id', $recipe->id)->exists();
             $formattedRecipe = [
                 'owner' => $recipe->user->name,
                 'id' => $recipe->id,
@@ -74,6 +77,8 @@ class Controller extends BaseController{
                 'cuisine' => $recipe->cuisine,
                 'ingredients' => $recipe->ingredients,
                 'image_url' => $recipe->image_url, 
+                'is_liked_by_user' => $isLikedByUser,
+                'is_in_list' => $isInList,
             ];
             $formattedRecipes[] = $formattedRecipe;
         }
