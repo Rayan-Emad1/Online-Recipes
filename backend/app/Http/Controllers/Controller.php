@@ -53,17 +53,13 @@ class Controller extends BaseController{
     }
 
     function searchRecipes(Request $request){
-        $category = $request->input('category', '');
         $query = $request->input('query', '');
 
         $queryBuilder = Recipe::query();
 
-        if ($category) {
-            $queryBuilder->where('cuisine', 'LIKE', "%$category%");
-        }
-
         if ($query) {
             $queryBuilder->where('name', 'LIKE', "%$query%")
+                        ->orwhere('cuisine', 'LIKE', "%$query%")
                         ->orWhere('ingredients', 'LIKE', "%$query%");
         }
 

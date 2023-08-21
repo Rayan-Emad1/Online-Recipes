@@ -4,7 +4,7 @@ import './styles.css';
 import RecipeInfo from '../RecipeInfo';
 
 
-const RecipesContainer = ({ url, islist = true, refreshRecipes }) => {
+const RecipesContainer = ({ url, islist = true }) => {
   const [recipes, setRecipes] = useState([]);
   const [recipe_id, setRecipeId] = useState(null);
   const token = localStorage.getItem('token');
