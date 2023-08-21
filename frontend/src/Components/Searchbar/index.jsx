@@ -32,7 +32,7 @@ const Searchbar = ({setSearchResults , setShowModal}) => {
 
     return<>
         <div className="search-bar">
-          <input type="text" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} placeholder="Search users..." />
+          <input className='search-bar-input' type="text" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} placeholder="Search users..." />
           <button className="search-button" onClick={handleSearch}>Search</button>
         </div>
     </>
