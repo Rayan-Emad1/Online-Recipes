@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './styles.css';
 
-const UserCard = ({ user, onFollow }) => {
+const UserCard = ({ user }) => {
   const token = localStorage.getItem('token');
   const [isFollowing, setIsFollowing] = useState(user.is_following);
 
@@ -32,15 +32,9 @@ const UserCard = ({ user, onFollow }) => {
   return (
     <div className="user-card">
       <span>{user.name}</span>
-      {isFollowing ? (
-        <button className="follow-button unfollow" onClick={() => handleFollow(user.id)}>
-          Unfollow
-        </button>
-      ) : (
-        <button className="follow-button" onClick={() => handleFollow(user.id)}>
-          Follow
-        </button>
-      )}
+      <button className={`follow-button ${isFollowing ? 'unfollow' : ''}`} onClick={() => handleFollow(user.id)}>
+        {isFollowing ? 'Unfollow' : 'Follow'}
+      </button>
     </div>
   );
 };
